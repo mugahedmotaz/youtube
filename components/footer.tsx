@@ -15,10 +15,10 @@ export default function Footer() {
           {/* Brand Section */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <Download className="h-8 w-8 text-blue-400" />
-              <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+              <h3 className="text-2xl font-bold m-2 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
                 Mugahed
               </h3>
+              <Download className="h-8 w-8 m-2 text-blue-400" />
             </div>
             <p className="text-gray-300 text-sm leading-relaxed">
               محمل فيديوهات يوتيوب احترافي وسريع. احصل على فيديوهاتك المفضلة بأعلى جودة ممكنة.
@@ -95,9 +95,9 @@ export default function Footer() {
           </div>
           
           <div className="flex items-center space-x-2 text-sm text-gray-400">
-            <span>صُنع بـ</span>
+            <span>صُنع بــ</span>
             <Heart className="h-4 w-4 text-red-500 animate-pulse" />
-            <span>في السودان</span>
+            <span>مجــاهـد </span>
           </div>
         </div>
 

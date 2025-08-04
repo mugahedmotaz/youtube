@@ -45,7 +45,7 @@ export async function getVideoFormats(videoId: string): Promise<VideoFormat[]> {
 
     const ytdlpPath = getYtdlpPath();
     console.log("getVideoFormats using yt-dlp path:", ytdlpPath);
-    
+
     const ytdlp = spawn(ytdlpPath, [
       "--list-formats",
       "--no-warnings",
@@ -156,10 +156,10 @@ export function downloadVideo(options: DownloadOptions): Promise<{ stream: Reada
       }
 
       ytdlpArgs = [
-        "--format", 
-        formatSelector, 
-        "--output", 
-        "-", 
+        "--format",
+        formatSelector,
+        "--output",
+        "-",
         "--no-warnings",
         "--no-check-certificate",
         "--socket-timeout",
@@ -176,7 +176,7 @@ export function downloadVideo(options: DownloadOptions): Promise<{ stream: Reada
 
     const ytdlpPath = getYtdlpPath();
     console.log("Using yt-dlp path:", ytdlpPath);
-    
+
     const ytdlp = spawn(ytdlpPath, ytdlpArgs, {
       stdio: ['ignore', 'pipe', 'pipe']
     });
@@ -196,11 +196,11 @@ export function downloadVideo(options: DownloadOptions): Promise<{ stream: Reada
       const errorText = data.toString();
       console.error("yt-dlp stderr:", errorText);
       errorOutput += errorText;
-      
+
       // Check for specific errors that indicate immediate failure
-      if (errorText.includes('Video unavailable') || 
-          errorText.includes('Private video') || 
-          errorText.includes('This video is not available')) {
+      if (errorText.includes('Video unavailable') ||
+        errorText.includes('Private video') ||
+        errorText.includes('This video is not available')) {
         if (!hasResolved) {
           hasResolved = true;
           ytdlp.kill('SIGKILL');
@@ -242,7 +242,7 @@ export async function getVideoInfoWithYtdlp(videoId: string): Promise<any> {
 
     const ytdlpPath = getYtdlpPath();
     console.log("getVideoInfoWithYtdlp using yt-dlp path:", ytdlpPath);
-    
+
     const ytdlp = spawn(ytdlpPath, ["--dump-json", "--no-warnings", videoUrl]);
 
     let output = ""
@@ -282,7 +282,7 @@ export async function checkYtdlpInstallation(): Promise<boolean> {
   return new Promise((resolve) => {
     const ytdlpPath = getYtdlpPath();
     console.log("Checking yt-dlp at path:", ytdlpPath);
-    
+
     const ytdlp = spawn(ytdlpPath, ["--version"], {
       stdio: ['ignore', 'pipe', 'pipe']
     });

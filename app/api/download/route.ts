@@ -53,16 +53,16 @@ export async function POST(request: NextRequest) {
         downloadStream.on('data', (chunk: Buffer) => {
           controller.enqueue(new Uint8Array(chunk));
         });
-        
+
         downloadStream.on('end', () => {
           controller.close();
         });
-        
+
         downloadStream.on('error', (error: Error) => {
           controller.error(error);
         });
       },
-      
+
       cancel() {
         downloadStream.destroy();
       }
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
     // Provide more specific error messages
     let errorMessage = "Download failed";
     let suggestion = "Make sure yt-dlp is installed: pip install yt-dlp";
-    
+
     if (error instanceof Error) {
       if (error.message.includes('timeout')) {
         errorMessage = "Download timeout";
