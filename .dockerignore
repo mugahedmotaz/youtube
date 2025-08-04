@@ -1,0 +1,19 @@
+node_modules
+.next
+.git
+.env*
+*.log
+README.md
+.gitignore
+
+# Keep important files for deployment
+!bin/
+!scripts/
+!Dockerfile
+!package.json
+!package-lock.json
+!next.config.mjs
+!tsconfig.json
+!tailwind.config.ts
+!components.json
+!middleware.ts
