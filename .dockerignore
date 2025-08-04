@@ -9,6 +9,8 @@ README.md
 # Keep important files for deployment
 !bin/
 !scripts/
+# Exclude Windows executables
+bin/*.exe
 !Dockerfile
 !package.json
 !package-lock.json
