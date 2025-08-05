@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Download, Youtube, AlertTriangle, Globe } from "lucide-react"
+import { Download, Youtube, AlertTriangle, Globe, Search, Link } from "lucide-react"
 import { VideoInfo } from "@/components/video-info"
 import { PlaylistInfo } from "@/components/playlist-info"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { DownloadPercentage } from "@/components/download-percentage"
+import { YouTubeSearch } from "@/components/youtube-search"
 import Footer from "../components/footer"
 
 interface VideoData {
@@ -54,6 +55,7 @@ export default function HomePage() {
   const [error, setError] = useState("")
   const [language, setLanguage] = useState<"ar" | "en">("ar")
   const [downloads, setDownloads] = useState<DownloadItem[]>([])
+  const [activeTab, setActiveTab] = useState<"search" | "url">("search")
 
   const isValidYouTubeUrl = (url: string) => {
     const patterns = [
@@ -267,6 +269,8 @@ export default function HomePage() {
       placeholder: "الصق رابط يوتيوب هنا (فيديو أو قائمة تشغيل)...",
       fetchButton: "جلب المعلومات",
       fetching: "جاري الجلب...",
+      searchTab: "البحث",
+      urlTab: "الرابط المباشر",
     },
     en: {
       title: "YouTube Downloader",
@@ -276,6 +280,8 @@ export default function HomePage() {
       placeholder: "Paste YouTube URL here (video or playlist)...",
       fetchButton: "Fetch Info",
       fetching: "Fetching...",
+      searchTab: "Search",
+      urlTab: "Direct URL",
     },
   }
 
@@ -331,7 +337,42 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Main Input Card */}
+        {/* Tab Navigation */}
+        <div className="mb-6">
+          <div className="flex gap-2 p-1 bg-muted rounded-lg w-fit">
+            <Button
+              variant={activeTab === "search" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setActiveTab("search")}
+              className="rounded-md"
+            >
+              <Search className="w-4 h-4 mr-1" />
+              {t.searchTab}
+            </Button>
+            <Button
+              variant={activeTab === "url" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setActiveTab("url")}
+              className="rounded-md"
+            >
+              <Link className="w-4 h-4 mr-1" />
+              {t.urlTab}
+            </Button>
+          </div>
+        </div>
+
+        {/* YouTube Search Component */}
+        {activeTab === "search" && (
+          <div className="mb-8">
+            <YouTubeSearch 
+              language={language}
+              onDownload={handleDownload}
+            />
+          </div>
+        )}
+
+        {/* URL Input Card */}
+        {activeTab === "url" && (
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -368,6 +409,7 @@ export default function HomePage() {
             </Alert>
           </CardContent>
         </Card>
+        )}
 
         {/* Video Info */}
         {videoData && (

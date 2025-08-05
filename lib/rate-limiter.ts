@@ -33,6 +33,28 @@ class RateLimiter {
 
     return Math.max(0, this.maxRequests - validRequests.length)
   }
+
+  getTimeUntilReset(identifier: string): number {
+    const requests = this.requests.get(identifier) || []
+    if (requests.length === 0) return 0
+    
+    const oldestRequest = Math.min(...requests)
+    const timeUntilReset = this.windowMs - (Date.now() - oldestRequest)
+    return Math.max(0, Math.ceil(timeUntilReset / 1000)) // Return seconds
+  }
+
+  // Clean up old entries periodically
+  cleanup(): void {
+    const now = Date.now()
+    for (const [identifier, requests] of this.requests.entries()) {
+      const validRequests = requests.filter((time) => now - time < this.windowMs)
+      if (validRequests.length === 0) {
+        this.requests.delete(identifier)
+      } else {
+        this.requests.set(identifier, validRequests)
+      }
+    }
+  }
 }
 
-export const rateLimiter = new RateLimiter(15, 60000) // 15 طلب في الدقيقة
+export const rateLimiter = new RateLimiter(8, 60000) // 8 طلبات في الدقيقة - أكثر تحفظاً لتجنب حظر YouTube
