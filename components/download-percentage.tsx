@@ -185,86 +185,97 @@ export function DownloadPercentage({ downloads, onPause, onResume, onCancel, onR
             {/* Enhanced Progress Display for Active Downloads */}
             {(download.status === "downloading" || download.status === "paused") && (
               <div className="space-y-4">
-                {/* Progress Circle and Percentage */}
-                <div className="flex items-center justify-center mb-4">
-                  <div className="relative">
-                    <div className="w-32 h-32 rounded-full border-8 border-gray-200 dark:border-gray-700"></div>
-                    <div 
-                      className={`absolute inset-0 w-32 h-32 rounded-full border-8 border-t-transparent transition-all duration-500 ${getProgressColor(download.progress, download.status)}`}
-                      style={{
-                        transform: `rotate(${(download.progress / 100) * 360 - 90}deg)`,
-                        borderTopColor: 'transparent'
-                      }}
-                    ></div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-center">
-                        <div className="text-3xl font-bold text-primary">
-                          {Math.round(download.progress)}%
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {download.status === "paused" ? "متوقف" : "جاري التحميل"}
-                        </div>
-                      </div>
+                {/* Progress Header with Percentage and Size */}
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="text-2xl font-bold text-primary">
+                      {Math.round(download.progress)}%
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {download.status === "paused" ? "متوقف مؤقتاً" : "جاري التحميل..."}
                     </div>
                   </div>
+                  {(download.downloadedSize && download.totalSize) && (
+                    <div className="text-sm text-muted-foreground text-right">
+                      <div className="font-medium">{download.downloadedSize}</div>
+                      <div className="text-xs">من {download.totalSize}</div>
+                    </div>
+                  )}
                 </div>
 
-                {/* Linear Progress Bar */}
-                <div className="space-y-2">
-                  <Progress 
-                    value={download.progress} 
-                    className="h-3 bg-gray-200 dark:bg-gray-700"
-                  />
-                  <div className="flex justify-between text-xs text-muted-foreground">
+                {/* Professional Progress Bar */}
+                <div className="space-y-3">
+                  <div className="relative">
+                    <Progress 
+                      value={download.progress} 
+                      className="h-2 bg-gray-200 dark:bg-gray-700"
+                    />
+                    {/* Progress indicator line */}
+                    <div 
+                      className="absolute top-0 h-2 bg-gradient-to-r from-blue-500 to-green-500 rounded-full transition-all duration-300"
+                      style={{ width: `${download.progress}%` }}
+                    ></div>
+                  </div>
+                  
+                  {/* Progress details */}
+                  <div className="flex justify-between items-center text-xs text-muted-foreground">
                     <span>0%</span>
-                    <span className="font-medium">{Math.round(download.progress)}%</span>
+                    <div className="flex items-center gap-4">
+                      {download.speed && (
+                        <span className="font-medium text-green-600">{download.speed}</span>
+                      )}
+                      {download.eta && (
+                        <span className="font-medium text-orange-600">{download.eta}</span>
+                      )}
+                    </div>
                     <span>100%</span>
                   </div>
                 </div>
 
-                {/* Detailed Statistics Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-                  {/* Download Speed */}
-                  <div className="text-center p-3 bg-green-50 dark:bg-green-950/20 rounded-lg border border-green-200 dark:border-green-800">
-                    <div className="font-bold text-green-600 text-lg">
-                      {download.speed || download.averageSpeed || "0 KB/s"}
+                {/* Compact Statistics */}
+                <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    {/* Left Column */}
+                    <div className="space-y-2">
+                      {download.speed && (
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">السرعة:</span>
+                          <span className="font-medium text-green-600">{download.speed}</span>
+                        </div>
+                      )}
+                      {download.downloadedSize && (
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">تم تحميله:</span>
+                          <span className="font-medium text-blue-600">{download.downloadedSize}</span>
+                        </div>
+                      )}
+                      {elapsedTimes[download.id] && (
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">الوقت المنقضي:</span>
+                          <span className="font-medium text-gray-600 dark:text-gray-400">{formatTime(elapsedTimes[download.id])}</span>
+                        </div>
+                      )}
                     </div>
-                    <div className="text-xs text-muted-foreground">السرعة</div>
-                  </div>
-                  
-                  {/* Time Remaining */}
-                  <div className="text-center p-3 bg-orange-50 dark:bg-orange-950/20 rounded-lg border border-orange-200 dark:border-orange-800">
-                    <div className="font-bold text-orange-600 text-lg">
-                      {download.eta || (elapsedTimes[download.id] ? calculateRemainingTime(download.progress, elapsedTimes[download.id]) : "غير محدد")}
+                    
+                    {/* Right Column */}
+                    <div className="space-y-2">
+                      {(download.eta || elapsedTimes[download.id]) && (
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">الوقت المتبقي:</span>
+                          <span className="font-medium text-orange-600">
+                            {download.eta || (elapsedTimes[download.id] ? calculateRemainingTime(download.progress, elapsedTimes[download.id]) : "غير محدد")}
+                          </span>
+                        </div>
+                      )}
+                      {download.totalSize && (
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">الحجم الكلي:</span>
+                          <span className="font-medium text-purple-600">{download.totalSize}</span>
+                        </div>
+                      )}
                     </div>
-                    <div className="text-xs text-muted-foreground">الوقت المتبقي</div>
-                  </div>
-                  
-                  {/* Downloaded Size */}
-                  <div className="text-center p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                    <div className="font-bold text-blue-600 text-lg">
-                      {download.downloadedSize || "غير محدد"}
-                    </div>
-                    <div className="text-xs text-muted-foreground">تم تحميله</div>
-                  </div>
-                  
-                  {/* Total Size */}
-                  <div className="text-center p-3 bg-purple-50 dark:bg-purple-950/20 rounded-lg border border-purple-200 dark:border-purple-800">
-                    <div className="font-bold text-purple-600 text-lg">
-                      {download.totalSize || "غير محدد"}
-                    </div>
-                    <div className="text-xs text-muted-foreground">الحجم الكلي</div>
                   </div>
                 </div>
-
-                {/* Elapsed Time */}
-                {elapsedTimes[download.id] && (
-                  <div className="text-center p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                    <div className="text-sm text-muted-foreground">
-                      الوقت المنقضي: <span className="font-medium">{formatTime(elapsedTimes[download.id])}</span>
-                    </div>
-                  </div>
-                )}
               </div>
             )}
 
